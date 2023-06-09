@@ -6,7 +6,8 @@ param containerAppsEnvironmentName string
 param containerRegistryName string
 param logAnalyticsWorkspaceName string
 param vnetName string
-param applicationInsightsName string = ''
+param storageName string
+param shareName string
 
 module containerAppsEnvironment 'container-apps-environment.bicep' = {
   name: '${name}-container-apps-environment'
@@ -15,8 +16,9 @@ module containerAppsEnvironment 'container-apps-environment.bicep' = {
     location: location
     tags: tags
     logAnalyticsWorkspaceName: logAnalyticsWorkspaceName
-    applicationInsightsName: applicationInsightsName
     vnetName: vnetName
+    storageName: storageName
+    shareName: shareName
   }
 }
 
@@ -33,3 +35,4 @@ output defaultDomain string = containerAppsEnvironment.outputs.defaultDomain
 output environmentName string = containerAppsEnvironment.outputs.name
 output registryLoginServer string = containerRegistry.outputs.loginServer
 output registryName string = containerRegistry.outputs.name
+output redisStorageMountName string = containerAppsEnvironment.outputs.redisStorageMountName

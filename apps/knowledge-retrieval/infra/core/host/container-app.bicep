@@ -18,6 +18,7 @@ param env array = []
 param external bool = true
 param imageName string
 param targetPort int = 80
+param exposedPort int = 80
 
 @description('User assigned identity name')
 param identityName string
@@ -25,20 +26,15 @@ param identityName string
 @description('Enabled Ingress for container app')
 param ingressEnabled bool = true
 
-// Dapr Options
-@description('Enable Dapr')
-param daprEnabled bool = false
-@description('Dapr app ID')
-param daprAppId string = containerName
-@allowed([ 'http', 'grpc' ])
-@description('Protocol used by Dapr to connect to the app, e.g. http or grpc')
-param daprAppProtocol string = 'http'
-
 @description('CPU cores allocated to a single container instance, e.g. 0.5')
 param containerCpuCoreCount string = '0.5'
 
 @description('Memory allocated to a single container instance, e.g. 1Gi')
 param containerMemory string = '1.0Gi'
+
+param storageMountName string = ''
+param storageVolumeName string = ''
+param storageMountPath string = ''
 
 resource userIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = {
   name: identityName
@@ -73,14 +69,10 @@ resource app 'Microsoft.App/containerApps@2022-11-01-preview' = {
       ingress: ingressEnabled ? {
         external: external
         targetPort: targetPort
-        transport: 'auto'
+        exposedPort: external ? null : exposedPort
+        transport: external ? 'auto' : 'TCP'
       } : null
-      dapr: daprEnabled ? {
-        enabled: true
-        appId: daprAppId
-        appProtocol: daprAppProtocol
-        appPort: ingressEnabled ? targetPort : 0
-      } : { enabled: false }
+      dapr: { enabled: false }
       secrets: secrets
       registries: [
         {
@@ -99,12 +91,25 @@ resource app 'Microsoft.App/containerApps@2022-11-01-preview' = {
             cpu: json(containerCpuCoreCount)
             memory: containerMemory
           }
+          volumeMounts: !empty(storageMountName) ? [
+            {
+              volumeName: storageVolumeName
+              mountPath: storageMountPath
+            }
+          ] : null
         }
       ]
       scale: {
         minReplicas: containerMinReplicas
         maxReplicas: containerMaxReplicas
       }
+      volumes: !empty(storageMountName) ? [
+        {
+          name: storageVolumeName
+          storageName: storageMountName
+          storageType: 'AzureFile'
+        }
+      ] : null
     }
   }
 }

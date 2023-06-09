@@ -23,6 +23,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 
 var prefix = '${name}-${resourceToken}'
 
+// Deploy log analytics
 module logAnalyticsWorkspace 'core/monitor/loganalytics.bicep' = {
   name: 'loganalytics'
   scope: resourceGroup
@@ -33,11 +34,23 @@ module logAnalyticsWorkspace 'core/monitor/loganalytics.bicep' = {
   }
 }
 
+// Deploy a virtual network
 module vnet 'core/network/vnet.bicep' = {
   name: 'virtual-network'
   scope: resourceGroup
   params: {
     name: '${prefix}-vnet'
+    location: location
+    tags: tags
+  }
+}
+
+// Deploy storage
+module storage 'core/storage/storage.bicep' = {
+  name: 'storage'
+  scope: resourceGroup
+  params: {
+    name: '${replace(resourceToken, '-', '')}storage'
     location: location
     tags: tags
   }
@@ -55,24 +68,46 @@ module containerApps 'core/host/container-apps.bicep' = {
     containerRegistryName: '${replace(prefix, '-', '')}registry'
     logAnalyticsWorkspaceName: logAnalyticsWorkspace.outputs.name
     vnetName: vnet.outputs.vnetName
+    storageName: storage.outputs.storageName
+    shareName: storage.outputs.shareName
   }
 }
 
+// // Container app
+// module aca 'aca.bicep' = {
+//   name: 'aca'
+//   scope: resourceGroup
+//   params: {
+//     name: replace('${take(prefix,19)}-ca', '--', '-')
+//     location: location
+//     tags: tags
+//     identityName: '${prefix}-id-aca'
+//     containerAppsEnvironmentName: containerApps.outputs.environmentName
+//     containerRegistryName: containerApps.outputs.registryName
+//     imageName: ''
+//   }
+// }
+
 // Container app
-module aca 'aca.bicep' = {
-  name: 'aca'
+module acaRedis 'aca.bicep' = {
+  name: 'aca-redis'
   scope: resourceGroup
   params: {
-    name: replace('${take(prefix,19)}-ca', '--', '-')
+    name: replace('${take(prefix,19)}-redis', '--', '-')
     location: location
     tags: tags
     identityName: '${prefix}-id-aca'
     containerAppsEnvironmentName: containerApps.outputs.environmentName
     containerRegistryName: containerApps.outputs.registryName
-    imageName: ''
+    imageName: 'redis/redis-stack-server:latest'
+    external: false
+    targetPort: 6379
+    exposedPort: 6379
+    storageVolumeName: 'redisstoragevol'
+    storageMountPath: '/data'
+    storageMountName: containerApps.outputs.redisStorageMountName
   }
 }
-
 
 module openAiRoleUser 'core/security/role.bicep' = {
   scope: resourceGroup
@@ -89,7 +124,7 @@ module openAiRoleBackend 'core/security/role.bicep' = {
   scope: resourceGroup
   name: 'openai-role-backend'
   params: {
-    principalId: aca.outputs.SERVICE_ACA_IDENTITY_PRINCIPAL_ID
+    principalId: acaRedis.outputs.SERVICE_ACA_IDENTITY_PRINCIPAL_ID
     roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
     principalType: 'ServicePrincipal'
   }
@@ -97,10 +132,10 @@ module openAiRoleBackend 'core/security/role.bicep' = {
 
 output AZURE_LOCATION string = location
 
-output SERVICE_ACA_IDENTITY_PRINCIPAL_ID string = aca.outputs.SERVICE_ACA_IDENTITY_PRINCIPAL_ID
-output SERVICE_ACA_NAME string = aca.outputs.SERVICE_ACA_NAME
-output SERVICE_ACA_URI string = aca.outputs.SERVICE_ACA_URI
-output SERVICE_ACA_IMAGE_NAME string = aca.outputs.SERVICE_ACA_IMAGE_NAME
+output SERVICE_ACA_IDENTITY_PRINCIPAL_ID string = acaRedis.outputs.SERVICE_ACA_IDENTITY_PRINCIPAL_ID
+output SERVICE_ACA_NAME string = acaRedis.outputs.SERVICE_ACA_NAME
+output SERVICE_ACA_URI string = acaRedis.outputs.SERVICE_ACA_URI
+output SERVICE_ACA_IMAGE_NAME string = acaRedis.outputs.SERVICE_ACA_IMAGE_NAME
 
 output AZURE_CONTAINER_ENVIRONMENT_NAME string = containerApps.outputs.environmentName
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerApps.outputs.registryLoginServer

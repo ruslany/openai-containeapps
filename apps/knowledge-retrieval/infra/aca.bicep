@@ -8,6 +8,14 @@ param containerRegistryName string
 param serviceName string = 'aca'
 param imageName string = ''
 
+param storageMountName string = ''
+param storageVolumeName string = ''
+param storageMountPath string = ''
+
+param targetPort int = 80
+param exposedPort int = 80
+param external bool = true
+
 resource acaIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: identityName
   location: location
@@ -23,7 +31,12 @@ module app 'core/host/container-app.bicep' = {
     containerAppsEnvironmentName: containerAppsEnvironmentName
     containerRegistryName: containerRegistryName
     imageName: imageName
-    targetPort: 80
+    targetPort: targetPort
+    exposedPort: exposedPort
+    external: external
+    storageMountName: storageMountName
+    storageVolumeName: storageVolumeName
+    storageMountPath: storageMountPath
   }
 }
 
