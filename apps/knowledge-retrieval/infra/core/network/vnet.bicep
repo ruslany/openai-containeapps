@@ -15,19 +15,6 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2022-11-01' = {
   properties: {
     securityRules: [
       {
-        name: 'allow-ssh'
-        properties: {
-          priority: 100
-          protocol: 'Tcp'
-          access: 'Allow'
-          direction: 'Inbound'
-          sourceAddressPrefix: '*'
-          sourcePortRange: '*'
-          destinationAddressPrefix: '*'
-          destinationPortRange: '22'
-        }
-      }
-      {
         name: 'allow-https-inbound'
         properties: {
           priority: 101
