@@ -33,7 +33,7 @@ module logAnalyticsWorkspace 'core/monitor/loganalytics.bicep' = {
   }
 }
 
-// Container apps host (including container registry)
+// Container apps environment and container registry
 module containerApps 'core/host/container-apps.bicep' = {
   name: 'container-apps'
   scope: resourceGroup
@@ -47,7 +47,7 @@ module containerApps 'core/host/container-apps.bicep' = {
   }
 }
 
-// Container app frontend
+// Container app
 module aca 'aca.bicep' = {
   name: 'aca'
   scope: resourceGroup
