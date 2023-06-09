@@ -65,7 +65,9 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
           delegations: [
             {
               name: 'Microsoft.App.Environments'
-              id: resourceId('Microsoft.Network/virtualNetworks/subnets/delegations', name, infraSubnetName, 'Microsoft.App/environments')
+              properties: {
+                serviceName: 'Microsoft.App/environments'
+              }
             }
           ]
         }
