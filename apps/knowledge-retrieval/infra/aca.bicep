@@ -6,23 +6,23 @@ param identityName string
 param containerAppsEnvironmentName string
 param containerRegistryName string
 param serviceName string = 'aca'
-param exists bool
+param imageName string = ''
 
 resource acaIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: identityName
   location: location
 }
 
-module app 'core/host/container-app-upsert.bicep' = {
+module app 'core/host/container-app.bicep' = {
   name: '${serviceName}-container-app-module'
   params: {
     name: name
     location: location
     tags: union(tags, { 'azd-service-name': serviceName })
     identityName: acaIdentity.name
-    exists: exists
     containerAppsEnvironmentName: containerAppsEnvironmentName
     containerRegistryName: containerRegistryName
+    imageName: imageName
     targetPort: 80
   }
 }
