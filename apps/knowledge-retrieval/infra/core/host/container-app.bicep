@@ -52,7 +52,7 @@ module containerRegistryAccess '../security/registry-access.bicep' = {
   }
 }
 
-resource app 'Microsoft.App/containerApps@2022-03-01' = {
+resource app 'Microsoft.App/containerApps@2022-11-01-preview' = {
   name: name
   location: location
   tags: tags
@@ -67,6 +67,7 @@ resource app 'Microsoft.App/containerApps@2022-03-01' = {
   }
   properties: {
     managedEnvironmentId: containerAppsEnvironment.id
+    workloadProfileName: 'Consumption'
     configuration: {
       activeRevisionsMode: 'single'
       ingress: ingressEnabled ? {

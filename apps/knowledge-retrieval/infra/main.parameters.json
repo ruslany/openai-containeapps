@@ -3,10 +3,10 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
       "name": {
-        "value": "bicep-openai"
+        "value": "openai-capps"
       },
       "location": {
-        "value": "westus"
+        "value": "eastus"
       },
       "principalId": {
         "value": "e30b47ae-a761-46db-9389-e5561e6f890f"

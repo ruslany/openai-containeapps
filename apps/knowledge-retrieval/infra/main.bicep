@@ -33,6 +33,16 @@ module logAnalyticsWorkspace 'core/monitor/loganalytics.bicep' = {
   }
 }
 
+module vnet 'core/network/vnet.bicep' = {
+  name: 'virtual-network'
+  scope: resourceGroup
+  params: {
+    name: '${prefix}-vnet'
+    location: location
+    tags: tags
+  }
+}
+
 // Container apps environment and container registry
 module containerApps 'core/host/container-apps.bicep' = {
   name: 'container-apps'
@@ -44,6 +54,7 @@ module containerApps 'core/host/container-apps.bicep' = {
     containerAppsEnvironmentName: '${prefix}-containerapps-env'
     containerRegistryName: '${replace(prefix, '-', '')}registry'
     logAnalyticsWorkspaceName: logAnalyticsWorkspace.outputs.name
+    vnetName: vnet.outputs.vnetName
   }
 }
 

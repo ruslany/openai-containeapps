@@ -5,6 +5,7 @@ param tags object = {}
 param containerAppsEnvironmentName string
 param containerRegistryName string
 param logAnalyticsWorkspaceName string
+param vnetName string
 param applicationInsightsName string = ''
 
 module containerAppsEnvironment 'container-apps-environment.bicep' = {
@@ -15,6 +16,7 @@ module containerAppsEnvironment 'container-apps-environment.bicep' = {
     tags: tags
     logAnalyticsWorkspaceName: logAnalyticsWorkspaceName
     applicationInsightsName: applicationInsightsName
+    vnetName: vnetName
   }
 }
 
