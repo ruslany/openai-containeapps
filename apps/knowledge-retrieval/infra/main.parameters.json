@@ -3,16 +3,16 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
       "name": {
-        "value": "${AZURE_ENV_NAME}"
+        "value": "bicep-openai"
       },
       "location": {
-        "value": "${AZURE_LOCATION}"
+        "value": "westus"
       },
       "principalId": {
-        "value": "${AZURE_PRINCIPAL_ID}"
+        "value": "e30b47ae-a761-46db-9389-e5561e6f890f"
       },
       "acaExists": {
-        "value": "${SERVICE_ACA_RESOURCE_EXISTS=false}"
+        "value": true
       }
     }
   }

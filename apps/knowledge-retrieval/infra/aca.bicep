@@ -13,7 +13,6 @@ resource acaIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-3
   location: location
 }
 
-
 module app 'core/host/container-app-upsert.bicep' = {
   name: '${serviceName}-container-app-module'
   params: {
@@ -24,7 +23,7 @@ module app 'core/host/container-app-upsert.bicep' = {
     exists: exists
     containerAppsEnvironmentName: containerAppsEnvironmentName
     containerRegistryName: containerRegistryName
-    targetPort: 50505
+    targetPort: 80
   }
 }
 
