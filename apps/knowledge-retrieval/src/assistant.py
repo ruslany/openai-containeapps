@@ -16,6 +16,7 @@ import streamlit as st
 
 from database import get_redis_results, get_redis_connection
 from config import RETRIEVAL_PROMPT, CHAT_MODEL, INDEX_NAME, SYSTEM_PROMPT
+from config import AZURE_OPENAI_BASE_URL, AZURE_OPENAI_API_KEY, AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME, AZURE_OPENAI_CHAT_DEPLOYMENT_NAME
 
 import os
 import typing
@@ -29,42 +30,17 @@ from dotenv import load_dotenv
 load_dotenv()
 
 openai.api_version = '2023-05-15'
-openai.api_base = 'https://ruslany-openai.openai.azure.com/'
-
-from azure.identity import DefaultAzureCredential
-
-default_credential = DefaultAzureCredential()
-token = default_credential.get_token("https://cognitiveservices.azure.com/.default")
-
-openai.api_type = 'azure_ad'
-openai.api_key = token.token
-
-class TokenRefresh(requests.auth.AuthBase):
-
-    def __init__(self, credential: "TokenCredential", scopes: typing.List[str]) -> None:
-        self.credential = credential
-        self.scopes = scopes
-        self.cached_token: typing.Optional[str] = None
-
-    def __call__(self, req):
-        if not self.cached_token or self.cached_token.expires_on - time.time() < 300:
-            self.cached_token = self.credential.get_token(*self.scopes)
-        req.headers["Authorization"] = f"Bearer {self.cached_token.token}"
-        return req
-
-session = requests.Session()
-session.auth = TokenRefresh(default_credential, ["https://cognitiveservices.azure.com/.default"])
-
-openai.requestssession = session
+openai.api_type = 'azure'
+openai.api_base = AZURE_OPENAI_BASE_URL
+openai.api_key = AZURE_OPENAI_API_KEY
 
 redis_client = get_redis_connection()
-
 
 def answer_user_question(query):
 
     results = get_redis_results(redis_client, query, INDEX_NAME)
 
-    results.to_csv("results.csv")
+    # results.to_csv("results.csv")
 
     search_content = ""
     for x, y in results.head(3).iterrows():
@@ -73,10 +49,6 @@ def answer_user_question(query):
     retrieval_prepped = RETRIEVAL_PROMPT.format(
         SEARCH_QUERY_HERE=query, SEARCH_CONTENT_HERE=search_content
     )
-
-    # save retreval_prepped to file
-    with open("retrieval_prepped.txt", "w") as f: # write in file
-        f.write(retrieval_prepped)
 
     retrieval = openai.ChatCompletion.create(
         deployment_id="gpt-35-turbo",
@@ -111,7 +83,7 @@ def answer_question_hyde(query):
     # st.write(hypothetical_answer)
     results = get_redis_results(redis_client, hypothetical_answer, INDEX_NAME)
 
-    results.to_csv("results.csv")
+    # results.to_csv("results.csv")
 
     search_content = ""
     for x, y in results.head(3).iterrows():
@@ -196,11 +168,11 @@ def initiate_agent(tools):
     output_parser = CustomOutputParser()
 
     llm = AzureChatOpenAI(temperature=0, 
-                          openai_api_base=os.getenv('AZURE_OPENAI_ENDPOINT'),
-                          openai_api_key=os.getenv('AZURE_OPENAI_KEY'),
+                          openai_api_base=AZURE_OPENAI_BASE_URL,
+                          openai_api_key=AZURE_OPENAI_API_KEY,
                           openai_api_version=openai.api_version,
                           openai_api_type="azure",
-                          deployment_name="gpt-35-turbo"
+                          deployment_name=AZURE_OPENAI_CHAT_DEPLOYMENT_NAME
     )
 
     # LLM chain consisting of the LLM and a prompt

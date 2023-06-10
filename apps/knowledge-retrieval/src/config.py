@@ -1,10 +1,21 @@
-REDIS_HOST = "localhost"
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+AZURE_OPENAI_BASE_URL = os.getenv("AZURE_OPENAI_BASE_URL")
+AZURE_OPENAI_API_KEY = os.getenv("AZURE_OPENAI_API_KEY")
+AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME = os.getenv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME")
+AZURE_OPENAI_CHAT_DEPLOYMENT_NAME = os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT_NAME")
+
+REDIS_HOST = os.getenv("REDIS_HOST")
 REDIS_PORT = "6379"
 REDIS_DB = "0"
 INDEX_NAME = "wiki-index"
 VECTOR_FIELD_NAME = "content_vector"
 CHAT_MODEL = "gpt-3.5-turbo"
 EMBEDDINGS_MODEL = "text-embedding-ada-002"
+
 # Set up the base template
 SYSTEM_PROMPT = """You are WikiGPT, a helpful bot who has access to a database of Wikipedia data to answer questions.
 Accept the first answer that you are provided for the user.
