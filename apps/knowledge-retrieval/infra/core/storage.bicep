@@ -1,8 +1,8 @@
 param name string
+param location string
 param tags object = {}
 param storageSKU string = 'Premium_LRS'
 param shareName string = '${name}redisfiles'
-param location string
 
 resource storage_account 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   name: name
