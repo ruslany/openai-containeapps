@@ -40,7 +40,7 @@ def answer_user_question(query):
 
     results = get_redis_results(redis_client, query, INDEX_NAME)
 
-    # results.to_csv("results.csv")
+    results.to_csv("results.csv")
 
     search_content = ""
     for x, y in results.head(3).iterrows():
@@ -83,7 +83,7 @@ def answer_question_hyde(query):
     # st.write(hypothetical_answer)
     results = get_redis_results(redis_client, hypothetical_answer, INDEX_NAME)
 
-    # results.to_csv("results.csv")
+    results.to_csv("results.csv")
 
     search_content = ""
     for x, y in results.head(3).iterrows():
