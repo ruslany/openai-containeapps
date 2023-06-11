@@ -102,7 +102,7 @@ resource chatApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
             }
             {
               name: 'REDIS_HOST'
-              value: redisapp.properties.configuration.ingress.fqdn
+              value: redisapp.name
             }
           ]
         }
@@ -127,7 +127,7 @@ resource redisapp 'Microsoft.App/containerApps@2022-11-01-preview' = {
     configuration: {
       activeRevisionsMode: 'single'
       ingress: {
-        external: true
+        external: false
         targetPort: 6379
         exposedPort: 6379
         transport: 'TCP'
