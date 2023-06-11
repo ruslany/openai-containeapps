@@ -27,7 +27,7 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2022-11-01' = {
         }
       }
       { 
-        name: 'allow-redist-inbound'
+        name: 'allow-redis-inbound'
         properties: {
           priority: 102
           protocol: 'Tcp'
