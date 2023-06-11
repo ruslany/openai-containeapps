@@ -22,6 +22,13 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2022-02-01-pr
   name: containerRegistryName
 }
 
+resource openAIAccount 'Microsoft.CognitiveServices/accounts@2022-10-01' existing = {
+  name: 'ruslany-openai'
+  scope: resourceGroup('openai-cookbook')
+}
+
+var openAIAccountEndpoint = openAIAccount.properties.endpoint
+var openAIAccountKey = openAIAccount.listKeys().key1
 
 module containerRegistryAccess 'registry-access.bicep' = {
   name: '${deployment().name}-registry-access'
@@ -49,12 +56,17 @@ resource chatApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
     managedEnvironmentId: containerAppsEnvironment.id
     workloadProfileName: 'Consumption'
     configuration: {
+      secrets: [
+        {
+          name: 'azureai-key'
+          value: openAIAccountKey
+        }
+      ]
       activeRevisionsMode: 'single'
       ingress: {
         external: true
-        targetPort: 80
+        targetPort: 8501
       }
-      dapr: { enabled: false }
       registries: [
         {
           server: '${containerRegistry.name}.azurecr.io'
@@ -65,12 +77,34 @@ resource chatApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
     template: {
       containers: [
         {
-          image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+          image: '${containerRegistry.name}.azurecr.io/openai-capps/chatbot:1.0'
           name: chatAppName
           resources: {
             cpu: json('0.5')
             memory: '1.0Gi'
           }
+          env: [
+            {
+              name: 'AZURE_OPENAI_BASE_URL'
+              value: openAIAccountEndpoint
+            }
+            {
+              name: 'AZURE_OPENAI_API_KEY'
+              secretRef: 'azureai-key'
+            }
+            {
+              name: 'AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME'
+              value: 'text-embedding-ada-002'
+            }
+            {
+              name: 'AZURE_OPENAI_CHAT_DEPLOYMENT_NAME'
+              value: 'gpt-35-turbo'
+            }
+            {
+              name: 'REDIS_HOST'
+              value: redisapp.properties.configuration.ingress.fqdn
+            }
+          ]
         }
       ]
       scale: {

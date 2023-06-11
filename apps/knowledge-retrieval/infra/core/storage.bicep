@@ -4,7 +4,7 @@ param tags object = {}
 param storageSKU string = 'Premium_LRS'
 param shareName string = '${name}redisfiles'
 
-resource storage_account 'Microsoft.Storage/storageAccounts@2021-09-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   name: name
   location: location
   tags: tags
@@ -17,10 +17,10 @@ resource storage_account 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   }
 }
 
-resource file_share 'Microsoft.Storage/storageAccounts/fileServices/shares@2021-09-01' = {
+resource fileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2021-09-01' = {
   name: '${name}/default/${shareName}'
   dependsOn: [
-    storage_account
+    storageAccount
   ]
 }
 
