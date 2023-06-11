@@ -5,7 +5,6 @@ param tags object = {}
 
 param addressPrefix string = '10.0.0.0/16'
 param infraSubnetPrefix string = '10.0.0.0/24'
-param defaultSubnetPrefix string = '10.0.1.0/24'
 
 var infraSubnetName = 'infra-subnet'
 
@@ -27,6 +26,20 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2022-11-01' = {
           destinationPortRange: '443'
         }
       }
+      { 
+        name: 'allow-redist-inbound'
+        properties: {
+          priority: 102
+          protocol: 'Tcp'
+          access: 'Allow'
+          direction: 'Inbound'
+          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '6379'
+        }
+      }
+
     ]
   }
 }
@@ -57,15 +70,6 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
               }
             }
           ]
-        }
-      }
-      {
-        name: 'default'
-        properties: {
-          addressPrefix: defaultSubnetPrefix
-          networkSecurityGroup: {
-            id: nsg.id
-          }
         }
       }
     ]

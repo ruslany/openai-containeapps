@@ -73,6 +73,7 @@ resource chatApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
           identity: userIdentity.id
         }
       ]
+      maxInactiveRevisions: 5
     }
     template: {
       containers: [
@@ -127,11 +128,12 @@ resource redisapp 'Microsoft.App/containerApps@2022-11-01-preview' = {
     configuration: {
       activeRevisionsMode: 'single'
       ingress: {
-        external: false
+        external: true
         targetPort: 6379
         exposedPort: 6379
         transport: 'TCP'
       }
+      maxInactiveRevisions: 5
     }
     template: {
       containers: [
