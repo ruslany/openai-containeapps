@@ -2,7 +2,6 @@ import numpy as np
 import openai
 import pandas as pd
 from config import (AZURE_OPENAI_API_KEY, AZURE_OPENAI_BASE_URL,
-                    AZURE_OPENAI_CHAT_DEPLOYMENT_NAME,
                     AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME, EMBEDDINGS_MODEL,
                     PREFIX, VECTOR_FIELD_NAME)
 from redis import Redis
