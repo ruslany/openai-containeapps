@@ -27,6 +27,7 @@ module azureRGDeployment 'azure-rg-deploy.bicep' = {
     name: name
     location: location
     tags: tags
+    chatBotImageTag: 'latest'
     //principalId: principalId
   }
 }

@@ -6,6 +6,10 @@ targetScope = 'resourceGroup'
 param name string
 
 @minLength(1)
+@description('Tag of the container image of the chatbot app')
+param chatBotImageTag string
+
+@minLength(1)
 @description('Location for all resources')
 param location string = resourceGroup().location
 
@@ -79,6 +83,7 @@ module containerApps 'core/container-apps.bicep' = {
     name: replace('${take(prefix,19)}', '--', '-')
     location: location
     tags: tags
+    chatbotImageTag: chatBotImageTag
     identityName: '${prefix}-id-aca'
     containerAppsEnvironmentName: containerAppsEnvironment.outputs.name
     containerRegistryName: containerRegistry.outputs.name

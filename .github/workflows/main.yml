@@ -14,6 +14,20 @@ jobs:
         calculatedSha=$(git rev-parse --short ${{ github.sha }})
         echo "short_sha=$calculatedSha" >> $GITHUB_OUTPUT
 
+    - name: 'Docker Login'
+      uses: azure/docker-login@v1
+      with:
+        login-server: ${{ vars.AZURE_ACI_ENDPOINT }}
+        username: ${{ secrets.AZURE_ACR_USERNAME }}
+        password: ${{ secrets.AZURE_ACR_PASSWORD }}
+
+    - name: Build the image and push it to ACR
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        tags: openaicappsvesjekffgjd5oregistry.azurecr.io/openai-capps/chatbot:${{ steps.vars.outputs.short_sha }}
+        file: apps/chatbot/src/Dockerfile
+
       # Login into Azure
     - uses: azure/login@v1
       with:
@@ -27,5 +41,5 @@ jobs:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
         resourceGroupName: ${{ secrets.AZURE_RG }}
         template: ./apps/chatbot/infra/azure-rg-deploy.bicep
-        parameters: 'name=${{ vars.AZURE_DEPLOYMENT_PREFIX }}'
+        parameters: 'name=${{ vars.AZURE_DEPLOYMENT_PREFIX }} chatBotImageTag=${{ steps.vars.outputs.short_sha }}'
         failOnStdErr: true
