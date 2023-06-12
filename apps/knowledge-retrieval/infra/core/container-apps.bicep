@@ -81,8 +81,8 @@ resource chatApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
           image: '${containerRegistry.name}.azurecr.io/openai-capps/chatbot:1.0'
           name: chatAppName
           resources: {
-            cpu: json('0.5')
-            memory: '1.0Gi'
+            cpu: json('1.0')
+            memory: '2.0Gi'
           }
           env: [
             {
@@ -141,8 +141,8 @@ resource redisapp 'Microsoft.App/containerApps@2022-11-01-preview' = {
           image: 'redis/redis-stack-server:latest'
           name: redisAppName
           resources: {
-            cpu: json('0.5')
-            memory: '1.0Gi'
+            cpu: json('2.0')
+            memory: '4.0Gi'
           }
           volumeMounts: [
             {
