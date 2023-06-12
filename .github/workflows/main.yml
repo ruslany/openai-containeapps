@@ -4,16 +4,16 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
+    
+      # Checkout code
+    - uses: actions/checkout@main
 
     - name: Set short git commit SHA
       id: vars
       run: |
         calculatedSha=$(git rev-parse --short ${{ github.sha }})
         echo "::set-output name=short_sha::$calculatedSha"
-    
-      # Checkout code
-    - uses: actions/checkout@main
-      
+
       # Login into Azure
     - uses: azure/login@v1
       with:
