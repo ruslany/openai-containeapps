@@ -1,8 +1,7 @@
 import streamlit as st
-from streamlit_chat import message
-
+from chatbot import Message, RetrievalAssistant
 from database import get_redis_connection
-from chatbot import RetrievalAssistant, Message
+from streamlit_chat import message
 
 # Initialise database
 
