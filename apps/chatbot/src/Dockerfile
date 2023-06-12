@@ -2,7 +2,7 @@ FROM python:3.11-slim
 
 WORKDIR /srv
 ADD ./apps/chatbot/src/Dockerfile /srv/requirements.txt
-RUN pip install -r requirements.txt
+RUN pip install -r /srv/requirements.txt
 ADD ./apps/chatbot/src /srv
 
 EXPOSE 8501

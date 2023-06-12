@@ -15,7 +15,7 @@ jobs:
         echo "short_sha=$calculatedSha" >> $GITHUB_OUTPUT
 
     - name: 'Docker Login'
-      uses: azure/docker-login@v1
+      uses: azure/docker-login@v4
       with:
         login-server: ${{ vars.AZURE_ACI_ENDPOINT }}
         username: ${{ secrets.AZURE_ACR_USERNAME }}
