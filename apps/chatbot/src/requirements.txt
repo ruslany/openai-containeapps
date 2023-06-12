@@ -8,3 +8,4 @@ streamlit_chat==0.0.2.2
 azure.core==1.27.0
 python-dotenv==1.0.0
 termcolor==2.3.0
+tiktoken==0.4.0

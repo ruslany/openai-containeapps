@@ -1,12 +1,6 @@
 import streamlit as st
 from chatbot import Message, RetrievalAssistant
-from database import get_redis_connection
 from streamlit_chat import message
-
-# Initialise database
-
-## Initialise Redis connection
-redis_client = get_redis_connection()
 
 # Set instruction
 
