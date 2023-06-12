@@ -18,6 +18,7 @@ jobs:
       uses: azure/arm-deploy@v1
       with:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-        location: ${{ env.AZURE_LOCATION }}
+        resourceGroupName: ${{ env.AZURE_RESOURCE_GROUP }}
         template: ./apps/chatbot/infra/main.bicep
         parameters: 'name=${{ env.AZURE_DEPLOYMENT_PREFIX }} location=${{ env.AZURE_DEPLOYMENT_LOCATION }} principalId=${{ secrets.AZURE_PRINCIPAL_ID }}'
+        failOnStdErr: true
