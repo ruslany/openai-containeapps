@@ -7,4 +7,4 @@ ADD . /srv
 
 EXPOSE 8501
 
-ENTRYPOINT ["streamlit", "run", "chatbot.py", "--server.port=8501"]
+ENTRYPOINT ["streamlit", "run", "chat.py", "--server.port=8501"]

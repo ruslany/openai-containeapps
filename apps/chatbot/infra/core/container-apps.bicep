@@ -78,7 +78,7 @@ resource chatApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
     template: {
       containers: [
         {
-          image: '${containerRegistry.name}.azurecr.io/openai-capps/chatbot:1.0'
+          image: '${containerRegistry.name}.azurecr.io/openai-capps/chatbot:1.2'
           name: chatAppName
           resources: {
             cpu: json('1.0')
@@ -100,6 +100,10 @@ resource chatApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
             {
               name: 'AZURE_OPENAI_CHAT_DEPLOYMENT_NAME'
               value: 'gpt-35-turbo'
+            }
+            {
+              name: 'AZURE_OPENAI_COMPLETIONS_DEPLOYMENT_NAME'
+              value: 'text-davinci-003'
             }
             {
               name: 'REDIS_HOST'
