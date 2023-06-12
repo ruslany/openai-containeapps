@@ -27,6 +27,6 @@ module azureRGDeployment 'azure-rg-deploy.bicep' = {
     name: name
     location: location
     tags: tags
-    principalId: principalId
+    //principalId: principalId
   }
 }
