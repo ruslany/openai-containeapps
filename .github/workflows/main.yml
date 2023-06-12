@@ -19,6 +19,6 @@ jobs:
       with:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
         resourceGroupName: ${{ secrets.AZURE_RG }}
-        template: ./apps/chatbot/infra/main.bicep
-        parameters: 'name=${{ env.AZURE_DEPLOYMENT_PREFIX }} location=${{ env.AZURE_DEPLOYMENT_LOCATION }} principalId=${{ secrets.AZURE_PRINCIPAL_ID }}'
+        template: ./apps/chatbot/infra/azure-rg-deploy.bicep
+        parameters: 'name=${{ env.AZURE_DEPLOYMENT_PREFIX }}'
         failOnStdErr: true
