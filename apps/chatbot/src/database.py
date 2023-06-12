@@ -1,13 +1,14 @@
-import pandas as pd 
 import numpy as np
 import openai
+import pandas as pd
+from config import (AZURE_OPENAI_API_KEY, AZURE_OPENAI_BASE_URL,
+                    AZURE_OPENAI_CHAT_DEPLOYMENT_NAME,
+                    AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME, EMBEDDINGS_MODEL,
+                    PREFIX, VECTOR_FIELD_NAME)
 from redis import Redis
-from redis.commands.search.field import VectorField
-from redis.commands.search.field import TextField, NumericField
+from redis.commands.search.field import NumericField, TextField, VectorField
 from redis.commands.search.query import Query
-from config import AZURE_OPENAI_API_KEY, AZURE_OPENAI_BASE_URL, AZURE_OPENAI_CHAT_DEPLOYMENT_NAME, AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME
 
-from config import EMBEDDINGS_MODEL, PREFIX, VECTOR_FIELD_NAME
 
 # Get a Redis connection
 def get_redis_connection(host='localhost',port='6379',db=0):

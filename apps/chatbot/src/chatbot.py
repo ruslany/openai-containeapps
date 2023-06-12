@@ -1,11 +1,11 @@
 import openai
-from termcolor import colored
 import streamlit as st
-
+from config import (AZURE_OPENAI_API_KEY, AZURE_OPENAI_BASE_URL,
+                    AZURE_OPENAI_CHAT_DEPLOYMENT_NAME,
+                    AZURE_OPENAI_COMPLETIONS_DEPLOYMENT_NAME, CHAT_MODEL,
+                    COMPLETIONS_MODEL, INDEX_NAME, REDIS_HOST)
 from database import get_redis_connection, get_redis_results
-
-from config import CHAT_MODEL, COMPLETIONS_MODEL, INDEX_NAME, AZURE_OPENAI_CHAT_DEPLOYMENT_NAME, AZURE_OPENAI_COMPLETIONS_DEPLOYMENT_NAME, REDIS_HOST
-from config import AZURE_OPENAI_API_KEY, AZURE_OPENAI_BASE_URL
+from termcolor import colored
 
 openai.api_version = '2023-05-15'
 openai.api_type = 'azure'

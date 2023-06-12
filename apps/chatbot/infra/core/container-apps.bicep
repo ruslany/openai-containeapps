@@ -78,7 +78,7 @@ resource chatApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
     template: {
       containers: [
         {
-          image: '${containerRegistry.name}.azurecr.io/chatbot:1.2'
+          image: '${containerRegistry.name}.azurecr.io/openai-capps/chatbot:1.3'
           name: chatAppName
           resources: {
             cpu: json('1.0')
