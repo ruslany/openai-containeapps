@@ -4,6 +4,12 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
+
+    - name: Set short git commit SHA
+      id: vars
+      run: |
+        calculatedSha=$(git rev-parse --short ${{ github.sha }})
+        echo "::set-output name=short_sha::$calculatedSha"
     
       # Checkout code
     - uses: actions/checkout@main
@@ -12,11 +18,12 @@ jobs:
     - uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
-        
+
       # Deploy Bicep file        
     - name: deploy
       uses: azure/arm-deploy@v1
       with:
+        deploymentName: ${{ secrets.AZURE_RG }}-${{ steps.vars.outputs.short_sha }}
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
         resourceGroupName: ${{ secrets.AZURE_RG }}
         template: ./apps/chatbot/infra/azure-rg-deploy.bicep
