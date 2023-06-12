@@ -1,9 +1,9 @@
 FROM python:3.11-slim
 
 WORKDIR /srv
-ADD ./requirements.txt /srv/requirements.txt
+ADD ./apps/chatbot/src/Dockerfile /srv/requirements.txt
 RUN pip install -r requirements.txt
-ADD . /srv
+ADD ./apps/chatbot/src /srv
 
 EXPOSE 8501
 
