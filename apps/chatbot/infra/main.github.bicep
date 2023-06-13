@@ -81,7 +81,7 @@ resource existingChatBotApp 'Microsoft.App/containerApps@2022-03-01' existing = 
 }
 
 var chatBotImage = exists ? existingChatBotApp.properties.template.containers[0].image : 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
-var chatBotImageFinal = !empty(chatBotImageName) ? '${containerRegistry.name}.azurecr.io/${chatBotImageName}' : chatBotImage
+var chatBotImageFinal = !empty(chatBotImageName) ? '${chatBotImageName}' : chatBotImage
 
 // Container apps
 module containerApps 'core/container-apps.bicep' = {
