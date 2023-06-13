@@ -1,4 +1,6 @@
 on: [push]
+  branches:
+    - main
 name: Azure Deployment
 jobs:
   build-and-deploy:
