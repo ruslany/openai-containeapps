@@ -90,22 +90,3 @@ module containerApps 'core/container-apps.bicep' = {
     storageMountName: containerAppsEnvironment.outputs.redisStorageMountName
   }
 }
-
-// module openAiRoleUser 'core/role.bicep' = {
-//   name: 'openai-role-user'
-//   params: {
-//     principalId: principalId
-//     roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
-//     principalType: 'User'
-//   }
-// }
-
-
-// module openAiRoleBackend 'core/role.bicep' = {
-//   name: 'openai-role-backend'
-//   params: {
-//     principalId: containerApps.outputs.identityPrincipalId
-//     roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
-//     principalType: 'ServicePrincipal'
-//   }
-// }
