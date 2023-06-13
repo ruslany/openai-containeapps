@@ -24,6 +24,6 @@ module main 'main.github.bicep' = {
     name: environmentName
     location: location
     tags: tags
-    chatBotImageTag: 'latest'
+    chatBotImageTag: ''
   }
 }

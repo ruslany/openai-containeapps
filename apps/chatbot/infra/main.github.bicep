@@ -5,9 +5,8 @@ targetScope = 'resourceGroup'
 @description('Name which is used to generate a short unique hash for each resource')
 param name string
 
-@minLength(1)
-@description('Tag of the container image of the chatbot app')
-param chatBotImageTag string
+@description('Tag of the container image of the chatbot app. If empty then default container apps image will be used')
+param chatBotImageTag string = ''
 
 @minLength(1)
 @description('Location for all resources')

@@ -2,7 +2,7 @@ param name string
 param location string
 param tags object = {}
 
-param chatbotImageTag string
+param chatbotImageTag string = ''
 param containerAppsEnvironmentName string
 param identityName string
 param containerRegistryName string
@@ -79,7 +79,7 @@ resource chatApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
     template: {
       containers: [
         {
-          image: '${containerRegistry.name}.azurecr.io/openai-capps/chatbot:${chatbotImageTag}'
+          image: !empty(chatbotImageTag) ? '${containerRegistry.name}.azurecr.io/openai-capps/chatbot:${chatbotImageTag}' : 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
           name: chatAppName
           resources: {
             cpu: json('1.0')
