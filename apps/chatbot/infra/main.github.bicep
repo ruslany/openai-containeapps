@@ -5,15 +5,14 @@ targetScope = 'resourceGroup'
 @description('Name which is used to generate a short unique hash for each resource')
 param name string
 
-@description('Tag of the container image of the chatbot app. If empty then default container apps image will be used')
-param chatBotImageTag string = ''
+@description('Name of the container image of the chatbot app.')
+param chatBotImageName string = ''
 
 @minLength(1)
 @description('Location for all resources')
 param location string = resourceGroup().location
 
-//@description('Id of the user or app to assign application roles')
-//param principalId string = ''
+param chatBotAppExists bool = false
 
 param tags object = {}
 
@@ -77,12 +76,13 @@ module containerAppsEnvironment 'core/container-apps-environment.bicep' = {
 
 // Container apps
 module containerApps 'core/container-apps.bicep' = {
-  name: 'aca-redis'
+  name: 'container-apps'
   params: {
     name: replace('${take(prefix,19)}', '--', '-')
     location: location
     tags: tags
-    chatbotImageTag: chatBotImageTag
+    chatBotImageName: chatBotImageName
+    chatBotAppExists: chatBotAppExists
     identityName: '${prefix}-id-aca'
     containerAppsEnvironmentName: containerAppsEnvironment.outputs.name
     containerRegistryName: containerRegistry.outputs.name

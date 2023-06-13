@@ -9,6 +9,8 @@ param environmentName string
 @description('Primary location for all resources')
 param location string
 
+param chatBotAppExists bool = false
+
 var tags = { 'azd-env-name': environmentName }
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
@@ -24,6 +26,7 @@ module main 'main.github.bicep' = {
     name: environmentName
     location: location
     tags: tags
-    chatBotImageTag: ''
+    chatBotImageName: ''
+    chatBotAppExists: chatBotAppExists
   }
 }
