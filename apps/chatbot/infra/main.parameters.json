@@ -9,7 +9,7 @@
         "value": "${AZURE_LOCATION}"
       },
       "exists": {
-        "value": "${SERVICE_ACA_RESOURCE_EXISTS=false}"
+        "value": "${SERVICE_ACACHAT_RESOURCE_EXISTS=false}"
       }
     }
 }

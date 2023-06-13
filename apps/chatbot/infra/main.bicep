@@ -30,3 +30,9 @@ module main 'main.github.bicep' = {
     exists: exists
   }
 }
+
+output SERVICE_ACA_NAME string = main.outputs.SERVICE_ACA_NAME
+output SERVICE_ACA_IMAGE_NAME string = main.outputs.SERVICE_ACA_IMAGE_NAME
+
+output AZURE_CONTAINER_REGISTRY_ENDPOINT string = main.outputs.AZURE_CONTAINER_REGISTRY_ENDPOINT
+output AZURE_CONTAINER_REGISTRY_NAME string = main.outputs.AZURE_CONTAINER_REGISTRY_NAME
