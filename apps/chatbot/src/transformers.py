@@ -88,8 +88,6 @@ def embed_corpus(
 
         return embeddings
 
-
-
 # Split a text into smaller chunks of size n, preferably ending at the end of a sentence
 def chunks(text, n, tokenizer):
     """Yield successive n-sized chunks from text."""
@@ -161,26 +159,3 @@ def handle_file_string(file, tokenizer, redis_conn, text_embedding_field, index_
         load_vectors(redis_conn, vectors, text_embedding_field)
     except Exception as e:
         print(f'Ran into a problem uploading to Redis: {e}')
-
-
-# Make a class to generate batches for insertion
-class BatchGenerator:
-    
-    
-    def __init__(self, batch_size: int = 10) -> None:
-        self.batch_size = batch_size
-    
-    # Makes chunks out of an input DataFrame
-    def to_batches(self, df: pd.DataFrame) -> Iterator[pd.DataFrame]:
-        splits = self.splits_num(df.shape[0])
-        if splits <= 1:
-            yield df
-        else:
-            for chunk in np.array_split(df, splits):
-                yield chunk
-
-    # Determines how many chunks DataFrame contains
-    def splits_num(self, elements: int) -> int:
-        return round(elements / self.batch_size)
-    
-    __call__ = to_batches
