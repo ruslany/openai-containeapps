@@ -43,7 +43,7 @@ var chatAppName = '${name}-chat'
 resource chatApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
   name: chatAppName
   location: location
-  tags: tags
+  tags: union(tags, { 'azd-service-name': 'aca' })
   // It is critical that the identity is granted ACR pull access before the app is created
   // otherwise the container app will throw a provision error
   // This also forces us to use an user assigned managed identity since there would no way to
