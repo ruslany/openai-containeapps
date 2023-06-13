@@ -2,7 +2,7 @@ param name string
 param location string
 param tags object = {}
 
-param chatbotImageTag string
+param chatBotImageName string
 param containerAppsEnvironmentName string
 param identityName string
 param containerRegistryName string
@@ -39,11 +39,11 @@ module containerRegistryAccess 'registry-access.bicep' = {
   }
 }
 
-var chatAppName = '${name}-chat'
-resource chatApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
-  name: chatAppName
+var chatBotAppName = '${name}-chat'
+resource chatBotApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
+  name: chatBotAppName
   location: location
-  tags: tags
+  tags: union(tags, { 'azd-service-name': 'acachat' })
   // It is critical that the identity is granted ACR pull access before the app is created
   // otherwise the container app will throw a provision error
   // This also forces us to use an user assigned managed identity since there would no way to
@@ -79,8 +79,8 @@ resource chatApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
     template: {
       containers: [
         {
-          image: '${containerRegistry.name}.azurecr.io/openai-capps/chatbot:${chatbotImageTag}'
-          name: chatAppName
+          image: chatBotImageName
+          name: chatBotAppName
           resources: {
             cpu: json('1.0')
             memory: '2.0Gi'
@@ -172,5 +172,5 @@ resource redisapp 'Microsoft.App/containerApps@2022-11-01-preview' = {
   }
 }
 
-output uri string = 'https://${chatApp.properties.configuration.ingress.fqdn}'
+output uri string = 'https://${chatBotApp.properties.configuration.ingress.fqdn}'
 output identityPrincipalId string = userIdentity.properties.principalId

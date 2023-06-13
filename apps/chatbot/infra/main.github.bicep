@@ -5,16 +5,14 @@ targetScope = 'resourceGroup'
 @description('Name which is used to generate a short unique hash for each resource')
 param name string
 
-@minLength(1)
-@description('Tag of the container image of the chatbot app')
-param chatBotImageTag string
+@description('Name of the container image of the chatbot app.')
+param chatBotImageName string = ''
 
 @minLength(1)
 @description('Location for all resources')
 param location string = resourceGroup().location
 
-//@description('Id of the user or app to assign application roles')
-//param principalId string = ''
+param exists bool = false
 
 param tags object = {}
 
@@ -76,14 +74,23 @@ module containerAppsEnvironment 'core/container-apps-environment.bicep' = {
   }
 }
 
+var cappsprefix = replace('${take(prefix,19)}', '--', '-')
+var chatBotAppName = '${cappsprefix}-chat'
+resource existingChatBotApp 'Microsoft.App/containerApps@2022-03-01' existing = if (exists) {
+  name: chatBotAppName
+}
+
+var chatBotImage = exists ? existingChatBotApp.properties.template.containers[0].image : 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+var chatBotImageFinal = !empty(chatBotImageName) ? '${chatBotImageName}' : chatBotImage
+
 // Container apps
 module containerApps 'core/container-apps.bicep' = {
-  name: 'aca-redis'
+  name: 'container-apps'
   params: {
-    name: replace('${take(prefix,19)}', '--', '-')
+    name: cappsprefix
     location: location
     tags: tags
-    chatbotImageTag: chatBotImageTag
+    chatBotImageName: chatBotImageFinal
     identityName: '${prefix}-id-aca'
     containerAppsEnvironmentName: containerAppsEnvironment.outputs.name
     containerRegistryName: containerRegistry.outputs.name
@@ -91,21 +98,8 @@ module containerApps 'core/container-apps.bicep' = {
   }
 }
 
-// module openAiRoleUser 'core/role.bicep' = {
-//   name: 'openai-role-user'
-//   params: {
-//     principalId: principalId
-//     roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
-//     principalType: 'User'
-//   }
-// }
+output SERVICE_ACACHAT_NAME string = chatBotAppName
+output SERVICE_ACACHAT_IMAGE_NAME string = chatBotImageFinal
 
-
-// module openAiRoleBackend 'core/role.bicep' = {
-//   name: 'openai-role-backend'
-//   params: {
-//     principalId: containerApps.outputs.identityPrincipalId
-//     roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
-//     principalType: 'ServicePrincipal'
-//   }
-// }
+output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerRegistry.outputs.loginServer
+output AZURE_CONTAINER_REGISTRY_NAME string =containerRegistry.outputs.name

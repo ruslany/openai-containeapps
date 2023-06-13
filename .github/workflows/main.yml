@@ -8,15 +8,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     
-      # Checkout code
+    # Checkout code
     - uses: actions/checkout@main
 
-    - name: Set short git commit SHA
+    # Set variables for later use
+    - name: Set image name using short git commit SHA as a tag
       id: vars
       run: |
         calculatedSha=$(git rev-parse --short ${{ github.sha }})
         echo "short_sha=$calculatedSha" >> $GITHUB_OUTPUT
+        echo "image_name=${{ vars.AZURE_ACI_ENDPOINT }}/openai-capps/chatbot:$calculatedSha" >> $GITHUB_OUTPUT
 
+    # Login into Azure Container Registry
     - name: 'Docker Login'
       uses: azure/docker-login@v1
       with:
@@ -24,12 +27,13 @@ jobs:
         username: ${{ secrets.AZURE_ACR_USERNAME }}
         password: ${{ secrets.AZURE_ACR_PASSWORD }}
 
+    # Build and push image to ACR
     - name: Build the image and push it to ACR
       uses: docker/build-push-action@v4
       with:
         push: true
-        tags: openaicappsvesjekffgjd5oregistry.azurecr.io/openai-capps/chatbot:${{ steps.vars.outputs.short_sha }}
-        file: apps/chatbot/src/Dockerfile
+        tags: ${{ steps.vars.outputs.image_name }}
+        context: ./apps/chatbot/src/
 
       # Login into Azure
     - uses: azure/login@v1
@@ -43,6 +47,6 @@ jobs:
         deploymentName: ${{ secrets.AZURE_RG }}-${{ steps.vars.outputs.short_sha }}
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
         resourceGroupName: ${{ secrets.AZURE_RG }}
-        template: ./apps/chatbot/infra/azure-rg-deploy.bicep
-        parameters: 'name=${{ vars.AZURE_DEPLOYMENT_PREFIX }} chatBotImageTag=${{ steps.vars.outputs.short_sha }}'
+        template: apps/chatbot/infra/main.github.bicep
+        parameters: 'name=${{ vars.AZURE_DEPLOYMENT_PREFIX }} chatBotImageName=${{ steps.vars.outputs.image_name }}'
         failOnStdErr: true
