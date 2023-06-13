@@ -98,8 +98,8 @@ module containerApps 'core/container-apps.bicep' = {
   }
 }
 
-output SERVICE_ACA_NAME string = chatBotAppName
-output SERVICE_ACA_IMAGE_NAME string = chatBotImageFinal
+output SERVICE_ACACHAT_NAME string = chatBotAppName
+output SERVICE_ACACHAT_IMAGE_NAME string = chatBotImageFinal
 
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerRegistry.outputs.loginServer
 output AZURE_CONTAINER_REGISTRY_NAME string =containerRegistry.outputs.name

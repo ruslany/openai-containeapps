@@ -31,8 +31,8 @@ module main 'main.github.bicep' = {
   }
 }
 
-output SERVICE_ACA_NAME string = main.outputs.SERVICE_ACA_NAME
-output SERVICE_ACA_IMAGE_NAME string = main.outputs.SERVICE_ACA_IMAGE_NAME
+output SERVICE_ACACHAT_NAME string = main.outputs.SERVICE_ACACHAT_NAME
+output SERVICE_ACACHAT_IMAGE_NAME string = main.outputs.SERVICE_ACACHAT_IMAGE_NAME
 
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = main.outputs.AZURE_CONTAINER_REGISTRY_ENDPOINT
 output AZURE_CONTAINER_REGISTRY_NAME string = main.outputs.AZURE_CONTAINER_REGISTRY_NAME
