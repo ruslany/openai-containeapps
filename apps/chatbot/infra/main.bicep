@@ -19,7 +19,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   tags: tags
 }
 
-module main 'main.github.bicep' = {
+module main_github 'main.github.bicep' = {
   name: 'azure-rg-deployment'
   scope: resourceGroup
   params: {
@@ -31,8 +31,10 @@ module main 'main.github.bicep' = {
   }
 }
 
-output SERVICE_ACACHAT_NAME string = main.outputs.SERVICE_ACACHAT_NAME
-output SERVICE_ACACHAT_IMAGE_NAME string = main.outputs.SERVICE_ACACHAT_IMAGE_NAME
+output AZURE_RESOURCE_GROUP string = resourceGroup.name
 
-output AZURE_CONTAINER_REGISTRY_ENDPOINT string = main.outputs.AZURE_CONTAINER_REGISTRY_ENDPOINT
-output AZURE_CONTAINER_REGISTRY_NAME string = main.outputs.AZURE_CONTAINER_REGISTRY_NAME
+output SERVICE_ACACHAT_NAME string = main_github.outputs.SERVICE_ACACHAT_NAME
+output SERVICE_ACACHAT_IMAGE_NAME string = main_github.outputs.SERVICE_ACACHAT_IMAGE_NAME
+
+output AZURE_CONTAINER_REGISTRY_ENDPOINT string = main_github.outputs.AZURE_CONTAINER_REGISTRY_ENDPOINT
+output AZURE_CONTAINER_REGISTRY_NAME string = main_github.outputs.AZURE_CONTAINER_REGISTRY_NAME
