@@ -12,7 +12,7 @@ param chatBotImageName string = ''
 @description('Location for all resources')
 param location string = resourceGroup().location
 
-param chatBotAppExists bool = false
+param exists bool = false
 
 param tags object = {}
 
@@ -74,15 +74,23 @@ module containerAppsEnvironment 'core/container-apps-environment.bicep' = {
   }
 }
 
+var cappsprefix = replace('${take(prefix,19)}', '--', '-')
+var chatBotAppName = '${cappsprefix}-chat'
+resource existingChatBotApp 'Microsoft.App/containerApps@2022-03-01' existing = if (exists) {
+  name: chatBotAppName
+}
+
+var chatBotImage = exists ? existingChatBotApp.properties.template.containers[0].image : 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+var chatBotImageFinal = !empty(chatBotImageName) ? '${containerRegistry.name}.azurecr.io/${chatBotImageName}' : chatBotImage
+
 // Container apps
 module containerApps 'core/container-apps.bicep' = {
   name: 'container-apps'
   params: {
-    name: replace('${take(prefix,19)}', '--', '-')
+    name: cappsprefix
     location: location
     tags: tags
-    chatBotImageName: chatBotImageName
-    chatBotAppExists: chatBotAppExists
+    chatBotImageName: chatBotImageFinal
     identityName: '${prefix}-id-aca'
     containerAppsEnvironmentName: containerAppsEnvironment.outputs.name
     containerRegistryName: containerRegistry.outputs.name

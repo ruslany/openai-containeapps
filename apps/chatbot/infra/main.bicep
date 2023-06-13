@@ -9,7 +9,7 @@ param environmentName string
 @description('Primary location for all resources')
 param location string
 
-param chatBotAppExists bool = false
+param exists bool = false
 
 var tags = { 'azd-env-name': environmentName }
 
@@ -27,6 +27,6 @@ module main 'main.github.bicep' = {
     location: location
     tags: tags
     chatBotImageName: ''
-    chatBotAppExists: chatBotAppExists
+    exists: exists
   }
 }

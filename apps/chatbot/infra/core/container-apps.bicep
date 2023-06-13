@@ -3,7 +3,6 @@ param location string
 param tags object = {}
 
 param chatBotImageName string
-param chatBotAppExists bool
 param containerAppsEnvironmentName string
 param identityName string
 param containerRegistryName string
@@ -41,18 +40,10 @@ module containerRegistryAccess 'registry-access.bicep' = {
 }
 
 var chatBotAppName = '${name}-chat'
-
-resource existingChatBotApp 'Microsoft.App/containerApps@2022-03-01' existing = if (chatBotAppExists) {
-  name: chatBotAppName
-}
-
-var chatBotImage = chatBotAppExists ? existingChatBotApp.properties.template.containers[0].image : 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
-var chatBotImageFinal = !empty(chatBotImageName) ? '${containerRegistry.name}.azurecr.io/${chatBotImageName}' : chatBotImage
-
 resource chatBotApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
   name: chatBotAppName
   location: location
-  tags: union(tags, { 'azd-service-name': 'aca' })
+  tags: union(tags, { 'azd-service-name': 'acachat' })
   // It is critical that the identity is granted ACR pull access before the app is created
   // otherwise the container app will throw a provision error
   // This also forces us to use an user assigned managed identity since there would no way to
@@ -88,7 +79,7 @@ resource chatBotApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
     template: {
       containers: [
         {
-          image: chatBotImageFinal
+          image: chatBotImageName
           name: chatBotAppName
           resources: {
             cpu: json('1.0')
