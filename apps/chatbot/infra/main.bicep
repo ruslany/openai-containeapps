@@ -3,31 +3,27 @@ targetScope = 'subscription'
 @minLength(1)
 @maxLength(64)
 @description('Name which is used to generate a short unique hash for each resource')
-param name string
+param environmentName string
 
 @minLength(1)
 @description('Primary location for all resources')
 param location string
 
-@description('Id of the user or app to assign application roles')
-param principalId string = ''
-
-var tags = { 'azd-env-name': name }
+var tags = { 'azd-env-name': environmentName }
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: '${name}-rg'
+  name: '${environmentName}-rg'
   location: location
   tags: tags
 }
 
-module azureRGDeployment 'azure-rg-deploy.bicep' = {
-  name: 'azureRGDeployment'
+module main 'main.github.bicep' = {
+  name: 'azure-rg-deployment'
   scope: resourceGroup
   params: {
-    name: name
+    name: environmentName
     location: location
     tags: tags
     chatBotImageTag: 'latest'
-    //principalId: principalId
   }
 }

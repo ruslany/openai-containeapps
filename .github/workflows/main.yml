@@ -40,6 +40,6 @@ jobs:
         deploymentName: ${{ secrets.AZURE_RG }}-${{ steps.vars.outputs.short_sha }}
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
         resourceGroupName: ${{ secrets.AZURE_RG }}
-        template: ./apps/chatbot/infra/azure-rg-deploy.bicep
+        template: apps/chatbot/infra/main.github.bicep
         parameters: 'name=${{ vars.AZURE_DEPLOYMENT_PREFIX }} chatBotImageTag=${{ steps.vars.outputs.short_sha }}'
         failOnStdErr: true
