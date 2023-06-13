@@ -14,7 +14,7 @@ param location string = resourceGroup().location
 
 param exists bool = false
 
-param tags object = {}
+param tags object = { 'azd-env-name': name }
 
 var resourceToken = toLower(uniqueString(subscription().id, name, location))
 
