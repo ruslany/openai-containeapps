@@ -22,11 +22,12 @@ jobs:
         password: ${{ secrets.AZURE_ACR_PASSWORD }}
 
     - name: Build the image and push it to ACR
+      id: docker_build
       uses: docker/build-push-action@v4
       with:
         push: true
-        tags: openaicappsvesjekffgjd5oregistry.azurecr.io/openai-capps/chatbot:${{ steps.vars.outputs.short_sha }}
-        file: apps/chatbot/src/Dockerfile
+        tags: ${{ vars.AZURE_ACI_ENDPOINT }}/openai-capps/chatbot:${{ steps.vars.outputs.short_sha }}
+        file: ./apps/chatbot/src/Dockerfile
 
       # Login into Azure
     - uses: azure/login@v1
@@ -41,5 +42,5 @@ jobs:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
         resourceGroupName: ${{ secrets.AZURE_RG }}
         template: apps/chatbot/infra/main.github.bicep
-        parameters: 'name=${{ vars.AZURE_DEPLOYMENT_PREFIX }} chatBotImageTag=${{ steps.vars.outputs.short_sha }}'
+        parameters: 'name=${{ vars.AZURE_DEPLOYMENT_PREFIX }} chatBotImageName=${{ docker_build.outputs.imageid }}'
         failOnStdErr: true
