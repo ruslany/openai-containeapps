@@ -27,7 +27,7 @@ jobs:
       with:
         push: true
         tags: ${{ vars.AZURE_ACI_ENDPOINT }}/openai-capps/chatbot:${{ steps.vars.outputs.short_sha }}
-        file: ./apps/chatbot/src/Dockerfile
+        file: ./apps/chatbot/src/
 
       # Login into Azure
     - uses: azure/login@v1
